@@ -1,34 +1,38 @@
 import allure
-import pytest
-from selenium.webdriver.support.ui import WebDriverWait
 
+from data import BASE_URL, DZEN_DOMAIN, ORDER_DATA_1, ORDER_DATA_2
 from pages.main_page import MainPage
 from pages.order_page import OrderPage
-from data import ORDER_DATA_1, ORDER_DATA_2
 
 
 @allure.feature("Заказ самоката")
-@allure.story("Позитивный сценарий")
-@pytest.mark.parametrize(
-    "entry_point, order_data",
-    [
-        ("header", ORDER_DATA_1),
-        ("footer", ORDER_DATA_2),
-    ],
-)
-def test_order_scooter(driver, entry_point, order_data):
+@allure.story("Позитивный сценарий: кнопка «Заказать» вверху страницы")
+def test_order_scooter_via_header_button(driver):
     main_page = MainPage(driver)
     order_page = OrderPage(driver)
 
     main_page.open_main_page()
+    main_page.click_order_button_header()
 
-    if entry_point == "header":
-        main_page.click_order_button_header()
-    else:
-        main_page.click_order_button_footer()
+    order_page.fill_first_form(ORDER_DATA_1)
+    order_page.fill_second_form(ORDER_DATA_1)
+    order_page.confirm_order()
 
-    order_page.fill_first_form(order_data)
-    order_page.fill_second_form(order_data)
+    assert order_page.is_success_modal_visible(), \
+        "Модальное окно успешного заказа не появилось"
+
+
+@allure.feature("Заказ самоката")
+@allure.story("Позитивный сценарий: кнопка «Заказать» внизу страницы")
+def test_order_scooter_via_footer_button(driver):
+    main_page = MainPage(driver)
+    order_page = OrderPage(driver)
+
+    main_page.open_main_page()
+    main_page.click_order_button_footer()
+
+    order_page.fill_first_form(ORDER_DATA_2)
+    order_page.fill_second_form(ORDER_DATA_2)
     order_page.confirm_order()
 
     assert order_page.is_success_modal_visible(), \
@@ -36,30 +40,26 @@ def test_order_scooter(driver, entry_point, order_data):
 
 
 @allure.feature("Навигация")
-@allure.story("Логотип Самокат")
-def test_scooter_logo_redirect(driver):
+@allure.story("Логотип «Самокат» ведёт на главную")
+def test_scooter_logo_redirects_to_main_page(driver):
     main_page = MainPage(driver)
     main_page.open_main_page()
     main_page.click_scooter_logo()
-    assert driver.current_url == "https://qa-scooter.praktikum-services.ru/"
+
+    assert main_page.get_current_url() == BASE_URL
 
 
 @allure.feature("Навигация")
-@allure.story("Логотип Яндекс")
-def test_yandex_logo_redirect(driver):
+@allure.story("Логотип «Яндекс» открывает Дзен в новой вкладке")
+def test_yandex_logo_redirects_to_dzen(driver):
     main_page = MainPage(driver)
     main_page.open_main_page()
 
-    original_window = driver.current_window_handle
+    original_window = main_page.get_current_window()
     main_page.click_yandex_logo()
 
-    WebDriverWait(driver, 10).until(lambda d: len(d.window_handles) > 1)
+    new_window = main_page.wait_for_second_window(original_window)
+    main_page.switch_to_window(new_window)
+    main_page.wait_for_url_contains(DZEN_DOMAIN)
 
-    for window in driver.window_handles:
-        if window != original_window:
-            driver.switch_to.window(window)
-            break
-
-    WebDriverWait(driver, 10).until(lambda d: "dzen.ru" in d.current_url)
-
-    assert "dzen.ru" in driver.current_url
+    assert DZEN_DOMAIN in main_page.get_current_url()

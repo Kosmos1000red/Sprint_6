@@ -1,20 +1,29 @@
 from selenium.webdriver.support import expected_conditions as EC
 
+from data import BASE_URL
 from pages.base_page import BasePage
 from locators.main_page_locators import MainPageLocators
 
 
 class MainPage(BasePage):
-    URL = "https://qa-scooter.praktikum-services.ru/"
+    URL = BASE_URL
 
     def open_main_page(self):
         self.open(self.URL)
+        self._close_cookie_banner_if_present()
+
+    def _close_cookie_banner_if_present(self):
+        try:
+            self.click(MainPageLocators.COOKIE_BUTTON)
+        except Exception:
+            pass
 
     def click_order_button_header(self):
-        self.click(MainPageLocators.ORDER_BUTTON_HEADER)
+        self.click_with_scroll(MainPageLocators.ORDER_BUTTON_HEADER)
 
     def click_order_button_footer(self):
-        self.click(MainPageLocators.ORDER_BUTTON_FOOTER)
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        self.click_with_scroll(MainPageLocators.ORDER_BUTTON_FOOTER)
 
     def click_scooter_logo(self):
         self.click(MainPageLocators.SCOOTER_LOGO)
@@ -23,13 +32,7 @@ class MainPage(BasePage):
         self.click(MainPageLocators.YANDEX_LOGO)
 
     def click_faq_question(self, index):
-        element = self.wait.until(
-            EC.element_to_be_clickable(MainPageLocators.FAQ_QUESTION(index))
-        )
-        self.driver.execute_script(
-            "arguments[0].scrollIntoView({block: 'center'});", element
-        )
-        element.click()
+        self.click_with_scroll(MainPageLocators.FAQ_QUESTION(index))
 
     def get_faq_answer_text(self, index):
         self.wait.until(

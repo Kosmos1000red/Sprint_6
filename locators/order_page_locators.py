@@ -11,10 +11,18 @@ class OrderPageLocators:
     NEXT_BUTTON = (By.XPATH, "//button[text()='Далее']")
 
     DATE_INPUT = (By.XPATH, "//input[@placeholder='* Когда привезти самокат']")
-    RENTAL_PERIOD_DROPDOWN = (By.XPATH, "//div[contains(@class,'Dropdown-root')]")
-    RENTAL_PERIOD_OPTION = lambda period: (By.XPATH, f"//div[text()='{period}']")
+
+    RENTAL_PERIOD_DROPDOWN = (
+        By.XPATH, "//div[contains(@class,'Dropdown-control')]"
+    )
+    RENTAL_PERIOD_OPTION = lambda period: (
+        By.XPATH,
+        f"//div[contains(@class,'Dropdown-option') and text()='{period}']"
+    )
+
     COLOR_CHECKBOX = lambda color: (By.XPATH, f"//label[text()='{color}']/input")
     COMMENT_INPUT = (By.XPATH, "//input[@placeholder='Комментарий для курьера']")
+
     ORDER_BUTTON = (
         By.XPATH,
         "//button[text()='Заказать' and ancestor::div[contains(@class,'Order_Content')]]"
@@ -25,5 +33,4 @@ class OrderPageLocators:
         By.XPATH,
         "//div[contains(@class,'Order_Modal')]//button[text()='Да']"
     )
-
     SUCCESS_MODAL = (By.XPATH, "//div[contains(text(),'Заказ оформлен')]")
