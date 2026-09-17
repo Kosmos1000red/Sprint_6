@@ -1,12 +1,12 @@
 from selenium.webdriver.support import expected_conditions as EC
 
-from data import BASE_URL
+from data import URLs
 from pages.base_page import BasePage
 from locators.main_page_locators import MainPageLocators
 
 
 class MainPage(BasePage):
-    URL = BASE_URL
+    URL = URLs.BASE_URL
 
     def open_main_page(self):
         self.open(self.URL)
@@ -22,7 +22,7 @@ class MainPage(BasePage):
         self.click_with_scroll(MainPageLocators.ORDER_BUTTON_HEADER)
 
     def click_order_button_footer(self):
-        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        self.scroll_to_bottom()
         self.click_with_scroll(MainPageLocators.ORDER_BUTTON_FOOTER)
 
     def click_scooter_logo(self):

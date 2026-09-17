@@ -16,6 +16,7 @@ class OrderPage(BasePage):
         self.click(OrderPageLocators.NEXT_BUTTON)
 
     def fill_second_form(self, data):
+        # Дата
         self.send_keys(OrderPageLocators.DATE_INPUT, data["date"])
         self.press_enter(OrderPageLocators.DATE_INPUT)
 

@@ -1,13 +1,13 @@
 import pytest
 import allure
 
-from data import FAQ_DATA
+from data import FaqData
 from pages.main_page import MainPage
 
 
 @allure.feature("FAQ")
 @allure.story("Выпадающий список «Вопросы о важном»")
-@pytest.mark.parametrize("index, expected_text", FAQ_DATA)
+@pytest.mark.parametrize("index, expected_text", FaqData.QUESTIONS_ANSWERS)
 def test_faq(driver, index, expected_text):
     main_page = MainPage(driver)
     main_page.open_main_page()

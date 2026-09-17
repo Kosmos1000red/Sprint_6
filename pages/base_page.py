@@ -36,6 +36,11 @@ class BasePage:
             "arguments[0].scrollIntoView({block: 'center'});", element
         )
 
+    def scroll_to_bottom(self):
+        self.driver.execute_script(
+            "window.scrollTo(0, document.body.scrollHeight);"
+        )
+
     def js_click(self, locator):
         element = self.find(locator)
         self.driver.execute_script("arguments[0].click();", element)

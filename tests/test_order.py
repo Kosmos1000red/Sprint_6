@@ -1,6 +1,6 @@
 import allure
 
-from data import BASE_URL, DZEN_DOMAIN, ORDER_DATA_1, ORDER_DATA_2
+from data import OrderData, URLs
 from pages.main_page import MainPage
 from pages.order_page import OrderPage
 
@@ -14,8 +14,8 @@ def test_order_scooter_via_header_button(driver):
     main_page.open_main_page()
     main_page.click_order_button_header()
 
-    order_page.fill_first_form(ORDER_DATA_1)
-    order_page.fill_second_form(ORDER_DATA_1)
+    order_page.fill_first_form(OrderData.ORDER_1)
+    order_page.fill_second_form(OrderData.ORDER_1)
     order_page.confirm_order()
 
     assert order_page.is_success_modal_visible(), \
@@ -31,8 +31,8 @@ def test_order_scooter_via_footer_button(driver):
     main_page.open_main_page()
     main_page.click_order_button_footer()
 
-    order_page.fill_first_form(ORDER_DATA_2)
-    order_page.fill_second_form(ORDER_DATA_2)
+    order_page.fill_first_form(OrderData.ORDER_2)
+    order_page.fill_second_form(OrderData.ORDER_2)
     order_page.confirm_order()
 
     assert order_page.is_success_modal_visible(), \
@@ -46,7 +46,7 @@ def test_scooter_logo_redirects_to_main_page(driver):
     main_page.open_main_page()
     main_page.click_scooter_logo()
 
-    assert main_page.get_current_url() == BASE_URL
+    assert main_page.get_current_url() == URLs.BASE_URL
 
 
 @allure.feature("Навигация")
@@ -60,6 +60,6 @@ def test_yandex_logo_redirects_to_dzen(driver):
 
     new_window = main_page.wait_for_second_window(original_window)
     main_page.switch_to_window(new_window)
-    main_page.wait_for_url_contains(DZEN_DOMAIN)
+    main_page.wait_for_url_contains(URLs.DZEN_DOMAIN)
 
-    assert DZEN_DOMAIN in main_page.get_current_url()
+    assert URLs.DZEN_DOMAIN in main_page.get_current_url()
